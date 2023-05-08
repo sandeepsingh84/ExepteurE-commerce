@@ -1,54 +1,156 @@
-import React from "react";
-import styles from './index.module.css'
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import CustomModal from "../../CustomModal";
+import { Link } from "react-router-dom";
+import Styles from "./index.module.css";
 
 export const Navbar = () => {
+  const [visible, setVisible] = useState(false);
+  const [displayOut, setDisplayOut] = useState(false);
+  const [data, setdata] = useState([]);
+
+  console.log("visible", visible);
+  const refSearch = useRef(null);
+
+  const handleClickSearchOutside = (event) => {
+    if (refSearch.current && !refSearch.current.contains(event.target)) {
+      if (event.target.id === "menuItem") {
+        setDisplayOut(true);
+      } else {
+        setDisplayOut(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (displayOut)
+      document.addEventListener("click", handleClickSearchOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickSearchOutside, true);
+    };
+  }, [displayOut]);
+
+  useEffect(() => {
+    axios
+      .get("https://dummyjson.com/products/categories")
+      .then((resolve) => {
+        console.log("resolve", resolve);
+        setdata(resolve?.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, []);
+
+  // useGetCurrentUsers(setUser);
   return (
     <div>
-      <div className="bg-gray-600 text-white font-bold p-2 border border-white mt-2">
+      <div className="bg-gray-600 text-white font-bold p-2 border border-white mt-2 px-2">
         <ul className="flex justify-between text-xl ">
-          <li className="hover:ease-in-out duration-300">Home<a href="/productList">Product</a></li>
-          <li className="hover:bg-gray-400 shadow rounded-md  ">About us<a href="/about">About</a></li>
+          <li className="hover:ease-in-out duration-300">
+            <Link to="/">Home</Link>
+          </li>
+          <li className="hover:bg-gray-400 shadow rounded-md  ">
+            <Link to="/about">About</Link>
+          </li>
 
-          <li className=" hover:bg-gray-400 rounded-md shadow">Categories</li>
+          <li
+            className=" hover:bg-gray-400 rounded-md shadow relative"
+            id="menuItem"
+            onClick={() => {
+              // setVisible(true);
+              setDisplayOut(true);
+            }}
+          >
+            <button> Categories</button>
+
+            {displayOut && (
+              <div ref={refSearch}>
+                <div
+                  className={`${Styles?.searchDropDown} 
+              
+                `}
+                >
+                  <ul>
+                    <li
+                      className={`${Styles?.searchDropDownItem} ${Styles?.disabled}`}
+                    >
+                      <div></div>
+                    </li>
+                    {/* {searchText?.length > 0 ? (
+                    searchText?.map((item) => (
+                      <li
+                        key={item?.variants?.productId}
+                        className={`${Styles?.searchDropDownItem}`}
+                        onClick={() => {
+                          // navigate(`/product-detail/${item?.srv_id}`);
+                          router.push(
+                            `/product/${item?.variants?.productId}`
+                          );
+                          setDisplayOut(false);
+                        }}
+                      >
+                        <Image
+                          src={item?.variants?.media[0]?.url}
+                          alt='prdctIng'
+                          height={30}
+                          width={30}
+                        />
+                        <div
+                          className='text-sm font-bold'
+                          style={{ color: 'black', alignSelf: 'center' }}
+                        >
+                          {item?.name}
+                        </div>
+                      </li>
+                    ))
+                  ) : isLoading ? (
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <LoadingCircle loadingColor='black' />
+                    </div>
+                  ) : (
+                    <div
+                      style={{ textAlign: 'center' }}
+                      className={`${Styles?.noProductsFound}`}
+                    >
+                      No products found
+                    </div>
+                  )} */}
+
+                    {data?.map((items) => (
+                      <div className="w-full">
+                        <div className="text-center font-bold text-base hover hover:bg-gray-400 hover:rounded-md hover:shadow-md p-2 w-full">
+                          <Link to={`/productList/${items}`}>{items}</Link>
+                        </div>
+                      </div>
+                    ))}
+                  </ul> 
+                </div>
+              </div>
+            )}
+          </li>
           <li className="hover:bg-gray-400 rounded-md shadow">Deals</li>
           <li className="hover:bg-gray-400 rounded-md shadow">Our Services</li>
         </ul>
       </div>
 
-      <div>
-        <img
-          alt=""
-          src="https://static.zara.net/photos///contents/mkt/spots/ss23-north-woman-collection/subhome-xmedia-14//w/1219/IMAGE-landscape-fill-f730f86a-6a75-4546-9a3e-4b9d09800f18-default_0.jpg?ts=1680706119360"
-          className="h-full w-full"
-        />
-        <img
-          alt=""
-          src="https://static.zara.net/photos///contents/mkt/spots/ss23-north-woman-jackets/subhome-xmedia-14//w/1219/IMAGE-landscape-fill-6574930c-a2ec-488f-93c9-8c1f74d92a56-default_0.jpg?ts=1680706460668"
-          className="h-full w-full"
-        />
-        <img
-          alt=""
-          src="https://static.zara.net/photos///contents/mkt/spots/ss23-north-woman-shoes-bags/subhome-xmedia-14-2//w/1219/IMAGE-landscape-default-fill-e81dc618-e4e8-44fe-a92b-564e446fc63c-default_0.jpg?ts=1680707420548"
-          className="h-full w-full"
-        />
-        <div
-          // style={{
-          //   // height:'100%',
-          //   objectFit:'contain',
-          //   backgroundPosition:'center',
-          //   backgroundSize:'auto',
-          //   backgroundRepeat:'no-repeat',
-          //   backgroundImage:
-          //     "https://images.unsplash.com/photo-1587304791558-bee9492162ec?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
-          // }}
-
-
-
-
-
-          className={styles?.imgBox}
-        />
-      </div>
+      <CustomModal visible={visible} maskClick={() => setVisible(false)}>
+        <div>
+          {data?.map((items) => (
+            <div>
+              <div className="text-center text-white bg-gray-600  font-bold hover hover:bg-gray-400 ">
+                <Link to={`/productList/${items}`}>{items}</Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CustomModal>
     </div>
   );
 };
