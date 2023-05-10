@@ -21,6 +21,7 @@ import ProductsListData from "./ProductsListData";
 import { SingleproductList } from "./SingleproductList";
 import {  LoginPage } from "./LoginPage";
 import { useState } from "react";
+import { CartItems } from "./CartItems";
 
 
 function App() {
@@ -63,6 +64,21 @@ function App() {
             </Layout>
           }
         />
+
+
+
+<Route
+          path="/CartItems"
+          element={
+            <Layout>
+               <CartItems/>
+            </Layout>
+          }
+        />
+
+
+
+
       </Routes> 
       {/* <ContactUs />
       <Card />
@@ -77,6 +93,7 @@ function App() {
 
       {/* <CustomModal/> */}
       {/* <LoginPage/> */}
+     
       
     </div>
   );
