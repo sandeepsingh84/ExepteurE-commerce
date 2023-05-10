@@ -1,0 +1,7 @@
+.imgBox{
+    background-image: url('https://images.unsplash.com/photo-1621814374283-57cc5d0d39c2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTh8fGZyYWdyYW5jZXN8ZW58MHx8MHx8&w=1000&q=80');
+background-position:center;
+background-repeat: no-repeat;
+background-size: cover;
+height: 100vh;
+}
